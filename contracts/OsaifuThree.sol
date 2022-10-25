@@ -7,8 +7,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./modules/Permission.sol";
 import "./modules/Signature.sol";
 import "./modules/DiamondCutModule.sol";
+import "./modules/SocialRecovery.sol";
 
-contract OsaifuThree is Permission, Signature, DiamondCutModule {
+contract OsaifuThree is Permission, Signature, SocialRecovery, DiamondCutModule {
     address public constant Ether = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     function Initialize(address owner, address custodian) public initializer {
