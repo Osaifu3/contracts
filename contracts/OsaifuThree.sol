@@ -9,6 +9,7 @@ import "./modules/Signature.sol";
 import "./modules/DiamondCutModule.sol";
 
 contract OsaifuThree is Permission, Signature, DiamondCutModule {
+    address public constant Ether = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     function Initialize(address owner, address custodian) public initializer {
         _transferOwnership(owner);
@@ -22,6 +23,31 @@ contract OsaifuThree is Permission, Signature, DiamondCutModule {
             "Permission: not authorized"
         );
         (bool success, bytes memory returnData) = target.call(payload);
+        require(success, string(returnData));
+    }
+
+    function callWithEther(
+        address target,
+        uint256 amount,
+        bytes calldata payload
+    ) public payable {
+        require(
+            delegatee[target].isAuthorized(msg.sender, target, payload),
+            "Permission: not authorized"
+        );
+
+        require(
+            delegatee[target].isAuthorized(
+                msg.sender,
+                Ether,
+                abi.encode(amount, target)
+            ),
+            "Permission: ether not allowed"
+        );
+
+        (bool success, bytes memory returnData) = target.call{value: amount}(
+            payload
+        );
         require(success, string(returnData));
     }
 
