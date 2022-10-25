@@ -56,4 +56,8 @@ contract Permission is ModuleBase {
     function delDelegatee(address _delegatee) external onlyOwner {
         _setDelegatee(_delegatee, IACL(address(0)));
     }
+
+    function setCustodian(address _custodian) external onlyOwner {
+        _setCustodian(_custodian);
+    }
 }
