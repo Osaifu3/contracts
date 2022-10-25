@@ -16,6 +16,14 @@ contract ContractACL is IACL, EIP712, Ownable {
 
     constructor() EIP712("ContractACL", "1") {}
 
+    function ACLName() external view returns (string memory) {
+        return "ContractACL";
+    }
+
+    function ACLMetadataURI() external view returns (string memory) {
+        return "https://osaifu3.app/examples/ContractACL.json";
+    }
+
     function authorize(
         address caller,
         address target,

@@ -7,6 +7,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // @dev This contract is an example of ACL implementation.
 //      It allows only the owner to call any function.
 contract OwnerACL is IACL, Ownable {
+
+    function ACLName() external view returns (string memory) {
+        return "ContractACL";
+    }
+
+    function ACLMetadataURI() external view returns (string memory) {
+        return "https://osaifu3.app/examples/OwnerACL.json";
+    }
+
     function isAuthorized(address caller, address, bytes calldata) public view returns (bool) {
         return caller == owner();
     }
