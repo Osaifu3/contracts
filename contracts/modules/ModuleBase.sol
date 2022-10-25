@@ -6,5 +6,5 @@ import "../interface/osaifu/IACL.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract ModuleBase is OwnableUpgradeable {
-    
+    mapping (address => uint256) public nonces;
 }

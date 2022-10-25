@@ -9,22 +9,34 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 contract ContractACL is IACL, EIP712, Ownable {
     using SignatureChecker for address;
 
-    mapping (address => mapping (address => bool)) public allowedContracts;
-    mapping (address => uint256) public nonce;
+    mapping(address => mapping(address => bool)) public allowedContracts;
+    mapping(address => uint256) public nonce;
 
     event Authorize(address indexed caller, address indexed target);
 
     constructor() EIP712("ContractACL", "1") {}
 
-    function authorize(address caller, address target, uint256 _nonce, bytes calldata signature) external onlyOwner {
+    function authorize(
+        address caller,
+        address target,
+        uint256 _nonce,
+        bytes calldata signature
+    ) external onlyOwner {
         require(_nonce == nonce[target], "ContractACL: invalid nonce");
-        bytes32 hash = _hashTypedDataV4(keccak256(abi.encode(
-            keccak256("Authorize(address,address,uint256)"),
-            caller,
-            target,
-            _nonce
-        )));
-        require(owner().isValidSignatureNow(hash, signature), "ContractACL: invalid signature");
+        bytes32 hash = _hashTypedDataV4(
+            keccak256(
+                abi.encodePacked(
+                    keccak256("Authorize(address,address,uint256)"),
+                    caller,
+                    target,
+                    _nonce
+                )
+            )
+        );
+        require(
+            owner().isValidSignatureNow(hash, signature),
+            "ContractACL: invalid signature"
+        );
         nonce[target]++;
         emit Authorize(caller, target);
         allowedContracts[target][caller] = true;
@@ -35,10 +47,19 @@ contract ContractACL is IACL, EIP712, Ownable {
         allowedContracts[target][caller] = true;
     }
 
-    function isAuthorized(address caller, address target, bytes calldata) external view returns (bool) {
+    function isAuthorized(
+        address caller,
+        address target,
+        bytes calldata
+    ) external view returns (bool) {
         return allowedContracts[caller][target];
     }
-    function isSignAllowed(address caller, address target) external view returns (bool) {
+
+    function isSignAllowed(address caller, address target)
+        external
+        view
+        returns (bool)
+    {
         return allowedContracts[caller][target];
     }
 }

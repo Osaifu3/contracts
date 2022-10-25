@@ -7,7 +7,7 @@ import "./ModuleBase.sol";
 
 contract Permission is ModuleBase {
     address public custodian;
-    mapping (address => IACL) public delegatee;
+    mapping(address => IACL) public delegatee;
 
     // Events.
     event SetDelegatee(address indexed delegatee, address indexed acl);
@@ -20,12 +20,18 @@ contract Permission is ModuleBase {
     }
 
     modifier transactionCheck(address target, bytes calldata payload) {
-        require(delegatee[target].isAuthorized(msg.sender, target, payload), "Permission: not authorized");
+        require(
+            delegatee[target].isAuthorized(msg.sender, target, payload),
+            "Permission: not authorized"
+        );
         _;
     }
 
     modifier signatureCheck(address target) {
-        require(delegatee[target].isSignAllowed(msg.sender, target), "Permission: not allowed");
+        require(
+            delegatee[target].isSignAllowed(msg.sender, target),
+            "Permission: not allowed"
+        );
         _;
     }
 
@@ -40,7 +46,10 @@ contract Permission is ModuleBase {
         delegatee[_delegatee] = _acl;
     }
 
-    function setDelegatee(address _delegatee, IACL _acl) external onlyCustodian {
+    function setDelegatee(address _delegatee, IACL _acl)
+        external
+        onlyCustodian
+    {
         _setDelegatee(_delegatee, _acl);
     }
 
