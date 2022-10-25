@@ -2,19 +2,18 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
 import "./modules/Permission.sol";
 import "./modules/Signature.sol";
 import "./modules/DiamondCutModule.sol";
 
 contract OsaifuThree is Permission, Signature, DiamondCutModule {
-    uint256 constant currentVersion = 1;
-    uint256 version = 0;
 
-    function Initialize() public {
-        require(version < currentVersion, "Already initialized");
-        __Ownable_init();
+    function Initialize(address owner, address custodian) public initializer {
+        _transferOwnership(owner);
+        _setCustodian(custodian);
         __EIP712_init("OsaifuThree", "1");
-        version = currentVersion;
     }
 
     function call(address target, bytes calldata payload) public {
